@@ -155,11 +155,33 @@ func server_drop_cache(notused int) int {
 	return 0
 }
 
+var _locked_variables map[string]bool
+
 func server_set(key, value string) string {
 	if key == "\x00" {
 		return g_config.list()
 	} else if value == "\x00" {
 		return g_config.list_option(key)
 	}
+	if _locked_variables != nil {
+		if set, known := _locked_variables[key]; known && set {
+			return key + " is locked!\n"
+		}
+	}
 	return g_config.set_option(key, value)
+}
+
+func server_lock(key string) string {
+	if _locked_variables == nil {
+		_locked_variables = map[string]bool{}
+	}
+	_locked_variables[key] = true
+	return key + " locked\n"
+}
+
+func server_unlock(key string) string {
+	if _locked_variables != nil {
+		_locked_variables[key] = false
+	}
+	return key + " unlocked\n"
 }

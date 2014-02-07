@@ -51,6 +51,10 @@ func do_client() int {
 			cmd_drop_cache(client)
 		case "set":
 			cmd_set(client)
+		case "lock":
+			cmd_lock(client)
+		case "unlock":
+			cmd_unlock(client)
 		}
 	}
 	return 0
@@ -169,4 +173,12 @@ func cmd_set(c *rpc.Client) {
 	case 3:
 		fmt.Print(client_set(c, flag.Arg(1), flag.Arg(2)))
 	}
+}
+
+func cmd_lock(c *rpc.Client) {
+	fmt.Print(client_lock(c, flag.Arg(1)))
+}
+
+func cmd_unlock(c *rpc.Client) {
+	fmt.Print(client_unlock(c, flag.Arg(1)))
 }

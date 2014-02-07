@@ -164,3 +164,41 @@ func client_set(cli *rpc.Client, Arg0, Arg1 string) string {
 	}
 	return reply.Arg0
 }
+
+type Args_lock struct {
+	Arg0 string
+}
+type Reply_lock struct {
+	Arg0 string
+}
+func (r *RPC) RPC_lock(args *Args_lock, reply *Reply_lock) error {
+	reply.Arg0 = server_lock(args.Arg0)
+	return nil
+}
+func client_lock(cli *rpc.Client, Arg0 string) string {
+	var args Args_lock
+	var reply Reply_lock
+	args.Arg0 = Arg0
+	err := cli.Call("RPC.RPC_lock", &args, &reply)
+	if err != nil { panic(err); }
+	return reply.Arg0
+}
+
+type Args_unlock struct {
+	Arg0 string
+}
+type Reply_unlock struct {
+	Arg0 string
+}
+func (r *RPC) RPC_unlock(args *Args_unlock, reply *Reply_unlock) error {
+	reply.Arg0 = server_unlock(args.Arg0)
+	return nil
+}
+func client_unlock(cli *rpc.Client, Arg0 string) string {
+	var args Args_unlock
+	var reply Reply_unlock
+	args.Arg0 = Arg0
+	err := cli.Call("RPC.RPC_unlock", &args, &reply)
+	if err != nil { panic(err); }
+	return reply.Arg0
+}
