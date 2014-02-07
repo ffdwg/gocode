@@ -12,7 +12,7 @@ var (
 	g_is_server = flag.Bool("s", false, "run a server instead of a client")
 	g_format    = flag.String("f", "nice", "output format (vim | emacs | nice | csv | json)")
 	g_input     = flag.String("in", "", "use this file instead of stdin input")
-	g_sock      = create_sock_flag("sock", "socket type (unix | tcp)")
+	g_sock      = get_default_sock("sock", "socket type (unix | tcp)")
 	g_addr      = flag.String("addr", get_default_addr(), "address for tcp socket")
 )
 
@@ -24,7 +24,7 @@ func get_socket_filename() string {
 	return filepath.Join(os.TempDir(), fmt.Sprintf("gocode-daemon.%s", user))
 }
 
-func get_default_addr() string {
+func get_env_addr() string {
 	// evaluate an ENV variable GOCODEADDR as the default address
 	goCodeAddr := os.Getenv("GOCODEADDR")
 	// check against address pattern (hostname/IP[:port])
@@ -35,8 +35,25 @@ func get_default_addr() string {
 		if goCodeAddr != "" {
 			panic( fmt.Sprintf("Error matching GOCODEADDR '%s' against '%s'\n", goCodeAddr, pattern ) )
 		}
-		return "localhost:37373"
+		return ""
 	}
+}
+
+func get_default_sock(par, desc string) *string {
+	addr := get_env_addr()
+	if addr == "" {
+		return create_sock_flag(par, desc)
+	} else {
+		return flag.String(par, "tcp", desc)
+	}
+}
+
+func get_default_addr() string {
+	addr := get_env_addr()
+	if addr == "" {
+		addr = "localhost:37373"
+	}
+	return addr
 }
 
 func show_usage() {
