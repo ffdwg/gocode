@@ -229,7 +229,12 @@ func (c *auto_complete_context) get_candidates_from_decl(cc cursor_context, clas
 // and length of the part that should be replaced (if any)
 func (c *auto_complete_context) apropos(file []byte, filename string, cursor int) ([]candidate, int) {
 	c.current.cursor = cursor
-	c.current.name = filename
+
+	useName := filename
+	if filename != "" {
+		useName = get_local_filename( filename )
+	}
+	c.current.name = useName
 
 	// Update caches and parse the current file.
 	// This process is quite complicated, because I was trying to design it in a
@@ -410,6 +415,7 @@ func find_other_package_files(filename, package_name string) []string {
 	dir, file := filepath.Split(filename)
 	files_in_dir, err := ioutil.ReadDir(dir)
 	if err != nil {
+		fmt.Printf("could not find filename %s of package %s in dir %s\n", filename, package_name, dir)
 		panic(err)
 	}
 

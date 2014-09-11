@@ -8,6 +8,8 @@ import (
 	"runtime"
 )
 
+const OVERRIDE_ENV bool = true
+
 func do_server() int {
 	g_config.read()
 
@@ -121,6 +123,11 @@ func server_auto_complete(file []byte, filename string, cursor int, env gocode_e
 			g_daemon.drop_cache()
 		}
 	}()
+
+	if OVERRIDE_ENV {
+		env = gocode_env{}
+		(&env).get()
+	}
 	if g_daemon.env != env {
 		g_daemon.env = env
 		g_daemon.drop_cache()

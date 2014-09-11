@@ -11,6 +11,11 @@ import (
 	"strconv"
 )
 
+const (
+	PATH_SERVER = "/home/falko"
+	PATH_CLIENT = "X:"
+)
+
 //-------------------------------------------------------------------------
 // config
 //

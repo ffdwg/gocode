@@ -54,3 +54,9 @@ func config_dir() string {
 func config_file() string {
 	return filepath.Join(get_appdata_folder_path(), "gocode", "config.json")
 }
+
+func get_local_filename(filename string) string {
+	newname := strings.Replace(filename, PATH_CLIENT, PATH_SERVER, -1)
+	return filepath.FromSlash(newname)
+}
+

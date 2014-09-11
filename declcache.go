@@ -44,6 +44,10 @@ func (env *gocode_env) get() {
 	}
 }
 
+func (env *gocode_env) String() string {
+	return fmt.Sprintf("GOPATH: %s, GOROOT: %s, GOARCH: %s, GOOS: %s", env.GOPATH, env.GOROOT, env.GOARCH, env.GOOS)
+}
+
 // Parses import declarations until the first non-import declaration and fills
 // `packages` array with import information.
 func collect_package_imports(filename string, decls []ast.Decl, env *gocode_env) []package_import {
@@ -55,7 +59,10 @@ func collect_package_imports(filename string, decls []ast.Decl, env *gocode_env)
 				path, alias := path_and_alias(imp)
 				path, ok := abs_path_for_package(filename, path, env)
 				if ok && alias != "_" {
+					// fmt.Printf("package to import: %s (as %s)\n", path, alias)
 					pi = append(pi, package_import{alias, path})
+				} else {
+					fmt.Printf("did not find path for package %v imported in %s (Env: %v)\n", path, filename, env)
 				}
 			}
 		} else {

@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 func create_sock_flag(name, desc string) *string {
@@ -45,4 +46,9 @@ func config_dir() string {
 
 func config_file() string {
 	return filepath.Join(xdg_home_dir(), "gocode", "config.json")
+}
+
+func get_local_filename(filename string) string {
+	newname := strings.Replace(filename, PATH_CLIENT, PATH_SERVER, -1)
+	return filepath.ToSlash(newname)
 }
